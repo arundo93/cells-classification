@@ -1,0 +1,32 @@
+{
+	"name": "ai-service",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "biome check .",
+		"format": "biome format ."
+	},
+	"dependencies": {
+		"@gravity-ui/icons": "^2.11.0",
+		"@gravity-ui/navigation": "^4.0.3",
+		"@gravity-ui/uikit": "^7.29.0",
+		"@hookform/resolvers": "^5.2.2",
+		"next": "^16.0.7",
+		"react": "19.2.0",
+		"react-dom": "19.2.0",
+		"react-hook-form": "^7.69.0",
+		"sqlite": "^5.1.1",
+		"sqlite3": "^5.1.7",
+		"yup": "^1.7.1"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.8",
+		"@types/node": "^20",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
+		"typescript": "^5"
+	}
+}

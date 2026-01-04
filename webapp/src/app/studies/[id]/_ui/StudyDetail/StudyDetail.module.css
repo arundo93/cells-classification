@@ -1,0 +1,20 @@
+.container {
+	overflow-y: auto;
+}
+
+.image {
+	width: auto;
+	height: auto;
+}
+
+.result {
+	position: relative;
+	white-space: pre;
+	display: block;
+}
+
+.clipboard {
+	position: absolute;
+	top: 0;
+	right: 0;
+}

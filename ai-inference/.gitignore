@@ -1,0 +1,4 @@
+/.py3_venv/
+**/__pycache__/
+weights/
+!weights/**/.gitkeep
