@@ -23,7 +23,7 @@
 		"yup": "^1.7.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.8",
+		"@biomejs/biome": "2.3.11",
 		"@types/node": "^20",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
