@@ -9,6 +9,14 @@ export type HealthCheckErrorResponse = {
 	error: string;
 };
 
+export type TaskCreateRequest = {
+	studies: {
+		filePath: string;
+		id: string;
+	}[];
+	models: string[];
+};
+
 export type TaskCreateResponse = {
 	status: 'all' | 'partial';
 	tasks_ignored: number;
@@ -21,5 +29,5 @@ export type TaskCreateErrorResponse = {
 
 export type ConfigResponse = {
 	models: string[];
-	classLabels: string[];
+	class_labels: string[];
 };

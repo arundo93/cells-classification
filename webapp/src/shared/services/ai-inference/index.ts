@@ -1,63 +1,46 @@
 import path from 'node:path';
 
-import {config} from '../../config';
+import {aiInferenceFetch} from '@/shared/api/fetch';
+
 import type {
 	HealthCheckErrorResponse,
 	HealthCheckResponse,
 	TaskCreateErrorResponse,
 	TaskCreateResponse,
 } from '../../types/ai-inference';
-import type {ConfigResponse} from '../../types/ai-inference/api';
+import type {
+	ConfigResponse,
+	TaskCreateRequest,
+} from '../../types/ai-inference/api';
 
-export function checkInferenceServiceStatus(): Promise<
-	HealthCheckResponse | HealthCheckErrorResponse | undefined
-> {
-	return fetch(`${config.aiInference.host}/health`, {
+export function checkInferenceServiceStatus() {
+	return aiInferenceFetch<undefined, HealthCheckResponse>({
+		url: '/health',
 		method: 'GET',
 	})
-		.then((response) => response.json())
-		.catch(async (err: Error | Response) => {
-			if (err instanceof Error) {
-				const cause = err.cause as {code?: string} | undefined;
-				console.error(err.message, 'cause', cause?.code);
-
-				return undefined;
-			}
+		.catch<HealthCheckErrorResponse>(async (err) => {
 			const error = await err.json();
 			console.log(error);
 			return {
 				status: 'error',
 				error: error.details,
 			};
-		});
+		})
+		.catch(() => undefined);
 }
 
-export function getOptions(): Promise<ConfigResponse> {
-	return fetch(`${config.aiInference.host}/options`, {
+export function getOptions() {
+	return aiInferenceFetch<undefined, ConfigResponse>({
+		url: '/options',
 		method: 'GET',
 	})
-		.then((response) => response.json())
-		.catch(async (err: Error | Response) => {
-			if (err instanceof Error) {
-				const cause = err.cause as {code?: string} | undefined;
-				console.error(err.message, 'cause', cause?.code);
-
-				return {
-					models: [],
-					class_labels: [],
-				};
-			}
-			const error = await err.json();
-			console.log(error);
-
-			return {
-				models: [],
-				class_labels: [],
-			};
-		})
 		.then((data) => ({
-			classLabels: data.class_labels,
 			models: data.models,
+			classLabels: data.class_labels,
+		}))
+		.catch(() => ({
+			models: [] as string[],
+			classLabels: [] as string[],
 		}));
 }
 
@@ -68,36 +51,31 @@ export function createTask(
 		filename: string;
 	}[],
 	models: string[] = ['resNet50'],
-): Promise<TaskCreateResponse | TaskCreateErrorResponse> {
-	return fetch(`${config.aiInference.host}/task/create`, {
+) {
+	return aiInferenceFetch<TaskCreateRequest, TaskCreateResponse>({
+		url: '/task/create',
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({
+		body: {
 			studies: studies.map(({id, series, filename}) => ({
 				filePath: path.join(series, filename),
 				id,
 			})),
 			models,
-		}),
+		},
 	})
-		.then((response) => response.json())
-		.catch(async (err: Error | Response) => {
-			if (err instanceof Error) {
-				const cause = err.cause as {code?: string} | undefined;
-				console.error(err.message, 'cause', cause?.code);
-
-				return {
-					status: 'error',
-					error: err.message,
-				};
-			}
+		.catch<TaskCreateErrorResponse>(async (err) => {
 			const error = await err.json();
 			console.log(error);
 			return {
 				status: 'error',
 				error: error.details,
 			};
-		});
+		})
+		.catch(() => ({
+			status: 'error',
+			error: 'unknown',
+		}));
 }
