@@ -3,45 +3,59 @@ import path from 'node:path';
 import {aiInferenceFetch} from '@/shared/api/fetch';
 
 import type {
-	HealthCheckErrorResponse,
 	HealthCheckResponse,
-	TaskCreateErrorResponse,
 	TaskCreateResponse,
 } from '../../types/ai-inference';
 import type {
 	ConfigResponse,
 	TaskCreateRequest,
 } from '../../types/ai-inference/api';
+import type {
+	CheckInferenceServiceStatus,
+	Options,
+	TaskCreateResult,
+} from './types';
 
 export function checkInferenceServiceStatus() {
+	const defaultStatus: CheckInferenceServiceStatus = {
+		status: 'error',
+		isFull: true,
+	};
+
 	return aiInferenceFetch<undefined, HealthCheckResponse>({
 		url: '/health',
 		method: 'GET',
 	})
-		.catch<HealthCheckErrorResponse>(async (err) => {
-			const error = await err.json();
-			console.log(error);
-			return {
-				status: 'error',
-				error: error.details,
-			};
-		})
-		.catch(() => undefined);
+		.then<CheckInferenceServiceStatus>((response) =>
+			'status' in response
+				? {
+						...response,
+						status: response.status,
+					}
+				: defaultStatus,
+		)
+		.catch(() => defaultStatus);
 }
 
 export function getOptions() {
+	const defaultOptions: Options = {
+		models: [],
+		classLabels: [],
+	};
+
 	return aiInferenceFetch<undefined, ConfigResponse>({
 		url: '/options',
 		method: 'GET',
 	})
-		.then((data) => ({
-			models: data.models,
-			classLabels: data.class_labels,
-		}))
-		.catch(() => ({
-			models: [] as string[],
-			classLabels: [] as string[],
-		}));
+		.then<Options>((data) =>
+			'models' in data
+				? {
+						models: data.models,
+						classLabels: data.class_labels,
+					}
+				: defaultOptions,
+		)
+		.catch<Options>(() => defaultOptions);
 }
 
 export function createTask(
@@ -52,6 +66,10 @@ export function createTask(
 	}[],
 	models: string[] = ['resNet50'],
 ) {
+	const defaultTaskStatus: TaskCreateResult = {
+		status: 'error',
+	};
+
 	return aiInferenceFetch<TaskCreateRequest, TaskCreateResponse>({
 		url: '/task/create',
 		method: 'POST',
@@ -66,16 +84,8 @@ export function createTask(
 			models,
 		},
 	})
-		.catch<TaskCreateErrorResponse>(async (err) => {
-			const error = await err.json();
-			console.log(error);
-			return {
-				status: 'error',
-				error: error.details,
-			};
-		})
-		.catch(() => ({
-			status: 'error',
-			error: 'unknown',
-		}));
+		.then((data) =>
+			'status' in data ? {status: data.status} : defaultTaskStatus,
+		)
+		.catch(() => defaultTaskStatus);
 }

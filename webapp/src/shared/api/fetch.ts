@@ -1,28 +1,18 @@
 import {config} from '../config';
 import {withDefaultConfig} from './middleware';
+import {withErrorLogger} from './middleware/withErrorLogger';
 
-export type FetchConfig<FetchRequest> = Omit<RequestInit, 'body'> & {
+export type FetchConfig = RequestInit & {
 	url: string;
-	body?: FetchRequest;
 };
 
-export function fetch<FetchRequest extends RequestInit['body']>(
-	config: FetchConfig<FetchRequest>,
-) {
+export function fetch(config: FetchConfig) {
 	const {url, ...init} = config;
-	return globalThis.fetch(url, init).catch(async (err: Error | Response) => {
-		if (err instanceof Error) {
-			const cause = err.cause as {code?: string} | undefined;
-			console.log(
-				`Fetch error: ${err.name}: ${err.message}${cause?.code ?? ''}`,
-			);
-		}
-		throw err;
-	});
+	return globalThis.fetch(url, init);
 }
 
 export type FetchFunction = typeof fetch;
 
-export const aiInferenceFetch = withDefaultConfig(fetch, {
+export const aiInferenceFetch = withDefaultConfig(withErrorLogger(fetch), {
 	host: config.aiInference.host,
 });

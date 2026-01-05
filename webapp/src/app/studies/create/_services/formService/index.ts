@@ -1,6 +1,9 @@
 'use server';
 
-import {createTask} from '@/shared/services/ai-inference';
+import {
+	checkInferenceServiceStatus,
+	createTask,
+} from '@/shared/services/ai-inference';
 import {
 	createStudy,
 	updateStudy,
@@ -10,6 +13,11 @@ import {
 import {formSchema} from './schema';
 import type {StudyForm} from './types';
 import {type Schema, ValidationError} from 'yup';
+
+export async function checkStatus() {
+	const {status, isFull} = await checkInferenceServiceStatus();
+	return status === 'ok' && !isFull;
+}
 
 export async function uploadStudy(
 	study: StudyForm['studies'][number],

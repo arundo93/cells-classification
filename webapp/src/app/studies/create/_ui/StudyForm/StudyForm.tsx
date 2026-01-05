@@ -2,7 +2,7 @@
 
 import {routes} from '@/shared/routes';
 
-import {uploadStudy} from '../../_services/formService';
+import {checkStatus, uploadStudy} from '../../_services/formService';
 import {formSchema} from '../../_services/formService/schema';
 import type {StudyForm as StudyFormType} from '../../_services/formService/types';
 import styles from './StudyForm.module.css';
@@ -73,18 +73,27 @@ export function StudyForm({options}: StudyFormProps) {
 
 	const onSubmit = async (data: StudyFormType) => {
 		const {models, studies} = data;
-		for (const study of studies) {
-			const result = await uploadStudy(study, models);
-			if (!result.success) {
-				add({
-					name: 'upload-study-error',
-					title: `Ошибка при загрузке файла ${study.file.name}`,
-					theme: 'danger',
-				});
+		const serviceStatus = await checkStatus();
+		if (serviceStatus) {
+			for (const study of studies) {
+				const result = await uploadStudy(study, models);
+				if (!result.success) {
+					add({
+						name: 'upload-study-error',
+						title: `Ошибка при загрузке файла ${study.file.name}`,
+						theme: 'danger',
+					});
+				}
 			}
+			reset();
+			router.push(routes.studies.url());
+		} else {
+			add({
+				name: 'upload-study-info',
+				title: `Сервис недоступен. Попробуйте позже`,
+				theme: 'info',
+			});
 		}
-		reset();
-		router.push(routes.studies.url());
 	};
 
 	return (

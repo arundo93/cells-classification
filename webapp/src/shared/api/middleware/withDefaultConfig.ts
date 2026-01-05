@@ -7,7 +7,7 @@ type DefaultConfig = Partial<{
 
 export function withDefaultConfig(fetch: FetchFunction, config: DefaultConfig) {
 	return async function _fetch<FetchRequest = unknown, FetchResponse = unknown>(
-		_config: FetchConfig<FetchRequest>,
+		_config: Omit<FetchConfig, 'body'> & {body?: FetchRequest},
 	) {
 		const {host, headers} = config;
 		const requestHeaders =
