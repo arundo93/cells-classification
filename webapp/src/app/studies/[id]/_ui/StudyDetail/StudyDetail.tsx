@@ -8,7 +8,6 @@ import styles from './StudyDetail.module.css';
 import {toResultTable} from './toResultTable';
 import {ArrowLeft} from '@gravity-ui/icons';
 import {
-	Box,
 	Button,
 	Card,
 	ClipboardButton,
@@ -74,7 +73,7 @@ export function StudyDetail(props: StudyDetailProps) {
 					</Text>
 				</Flex>
 			</Flex>
-			<Box className={styles.container} spacing={{px: 4, pb: 4}}>
+			<Flex className={styles.container} gap={8} wrap spacing={{px: 4, pb: 4}}>
 				<Flex direction="column" gap={8}>
 					<Flex gap={4}>
 						<Image
@@ -114,20 +113,20 @@ export function StudyDetail(props: StudyDetailProps) {
 							}))}
 						></Table>
 					</Flex>
-					<Flex direction="column" gap={2} alignItems="flex-start">
-						<Text variant="body-3">RAW</Text>
-						<Card view="filled" spacing={{p: 4}} size="l">
-							<Text className={styles.result} as="code" variant="code-1">
-								<ClipboardButton
-									className={styles.clipboard}
-									text={JSON.stringify(rawResult)}
-								/>
-								{JSON.stringify(rawResult, null, 2)}
-							</Text>
-						</Card>
-					</Flex>
 				</Flex>
-			</Box>
+				<Flex direction="column" gap={2} alignItems="flex-start">
+					<Text variant="body-3">RAW</Text>
+					<Card view="filled" spacing={{p: 4}} size="l">
+						<Text className={styles.result} as="code" variant="code-1">
+							<ClipboardButton
+								className={styles.clipboard}
+								text={JSON.stringify(rawResult)}
+							/>
+							{JSON.stringify(rawResult, null, 2)}
+						</Text>
+					</Card>
+				</Flex>
+			</Flex>
 		</Flex>
 	);
 }

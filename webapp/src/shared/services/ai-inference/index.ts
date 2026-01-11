@@ -8,10 +8,12 @@ import type {
 } from '../../types/ai-inference';
 import type {
 	ConfigResponse,
+	ModelsInfoResponse,
 	TaskCreateRequest,
 } from '../../types/ai-inference/api';
 import type {
 	CheckInferenceServiceStatus,
+	ModelsInfo,
 	Options,
 	TaskCreateResult,
 } from './types';
@@ -56,6 +58,24 @@ export function getOptions() {
 				: defaultOptions,
 		)
 		.catch<Options>(() => defaultOptions);
+}
+
+export function getModelsInfo() {
+	const defaultOptions: ModelsInfo = [];
+
+	return aiInferenceFetch<undefined, ModelsInfoResponse>({
+		url: '/models',
+		method: 'GET',
+	})
+		.then<ModelsInfo>((data) =>
+			'models' in data
+				? data.models.map((model) => ({
+						...model,
+						status: {text: 'Активная', theme: 'success'},
+					}))
+				: defaultOptions,
+		)
+		.catch<ModelsInfo>(() => defaultOptions);
 }
 
 export function createTask(

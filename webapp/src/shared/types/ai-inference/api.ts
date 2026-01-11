@@ -23,6 +23,20 @@ type Config500Response = ErrorBaseResponse;
 
 export type ConfigResponse = Config200Response | Config500Response;
 
+type ModelInfo = {
+	name: string;
+	description: string;
+	characteristics: Record<string, string>;
+};
+
+type ModelsInfo200Response = {
+	models: ModelInfo[];
+};
+
+type ModelsInfo500Response = ErrorBaseResponse;
+
+export type ModelsInfoResponse = ModelsInfo200Response | ModelsInfo500Response;
+
 export type TaskCreateRequest = {
 	studies: {
 		filePath: string;

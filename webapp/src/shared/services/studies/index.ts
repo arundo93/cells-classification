@@ -46,10 +46,12 @@ export async function getAllStudies(): Promise<Study[]> {
 // Get study by ID
 export async function getStudyById(id: Study['id']): Promise<Study | null> {
 	const db = await getDatabase();
-	return await db.get(
-		'SELECT id, series as series, filename as filename, models as models, class_label as classLabel, status, created_at as createdAt, updated_at as updatedAt FROM studies WHERE id = ?',
-		[id],
-	) ?? null;
+	return (
+		(await db.get(
+			'SELECT id, series as series, filename as filename, models as models, class_label as classLabel, status, created_at as createdAt, updated_at as updatedAt FROM studies WHERE id = ?',
+			[id],
+		)) ?? null
+	);
 }
 
 // Get study by filename
@@ -57,10 +59,12 @@ export async function getStudyByFilename(
 	filename: Study['filename'],
 ): Promise<Study | null> {
 	const db = await getDatabase();
-	return await db.get(
-		'SELECT id, series as series, filename as filename, models as models, class_label as classLabel, status, created_at as createdAt, updated_at as updatedAt FROM studies WHERE filename = ?',
-		[filename],
-	) ?? null;
+	return (
+		(await db.get(
+			'SELECT id, series as series, filename as filename, models as models, class_label as classLabel, status, created_at as createdAt, updated_at as updatedAt FROM studies WHERE filename = ?',
+			[filename],
+		)) ?? null
+	);
 }
 
 // Update study status
