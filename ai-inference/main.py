@@ -125,3 +125,15 @@ def getOptions():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Config retrieval failed: {str(e)}")
+
+@app.get("/models")
+def getOptions():
+    try:
+        return {
+            "models": list(
+                {k: v for k, v in model.items() if k != "weights"}
+                for model in modelConfig.models
+            ),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get models info: {str(e)}")

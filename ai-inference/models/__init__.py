@@ -17,7 +17,7 @@ class ModelBase:
         
         weightsPath = self.models[modelName]
 
-        if modelName == "resNet50" or modelName == "resNet50_transfer":
+        if modelName == "ResNet50" or modelName == "ResNet50_transfer":
             model = ResNetModel(weightsPath, modelName, self.config.classes, self.config.device)
         elif modelName == "VisionTransformer":
             model = ViTModel(weightsPath, self.config.classes, self.config.device)
