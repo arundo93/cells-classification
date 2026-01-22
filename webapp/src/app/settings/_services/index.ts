@@ -1,0 +1,1 @@
+export {updateTheme} from './themeService';

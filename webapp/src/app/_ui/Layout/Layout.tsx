@@ -2,7 +2,6 @@
 
 import {
 	Flex,
-	ThemeProvider,
 	Toaster,
 	ToasterComponent,
 	ToasterProvider,
@@ -14,13 +13,11 @@ export function Layout(props: React.PropsWithChildren) {
 	const {children} = props;
 
 	return (
-		<ThemeProvider theme="light">
-			<ToasterProvider toaster={toaster}>
-				<Flex direction="row" width="100%" height="100vh">
-					{children}
-				</Flex>
-				<ToasterComponent />
-			</ToasterProvider>
-		</ThemeProvider>
+		<ToasterProvider toaster={toaster}>
+			<Flex direction="row" width="100%" height="100vh">
+				{children}
+			</Flex>
+			<ToasterComponent />
+		</ToasterProvider>
 	);
 }
