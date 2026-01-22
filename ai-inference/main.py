@@ -78,7 +78,7 @@ async def enqueueTask(request: Request):
     
     if models:
         for m in models:
-            if m not in config.models:
+            if m not in list(model['name'] for model in modelConfig.models):
                 raise HTTPException(status_code=400, detail=f"Unsupported model: {m}")
 
     # Check if queue is full
@@ -120,7 +120,7 @@ def healthCheck():
 def getOptions():
     try:
         return {
-            "models": config.models,
+            "models": list(model['name'] for model in modelConfig.models),
             "class_labels": modelConfig.classes
         }
     except Exception as e:
