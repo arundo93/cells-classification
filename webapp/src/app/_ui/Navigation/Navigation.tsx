@@ -15,7 +15,7 @@ export function Navigation() {
 	return (
 		<div className={styles.container}>
 			<AsideHeader
-				logo={{text: 'BCD', icon: Molecule}}
+				logo={{text: 'BCC', icon: Molecule}}
 				menuItems={[
 					{
 						id: '0',

@@ -4,11 +4,13 @@ import {routes} from '@/shared/routes';
 import type {Study} from '@/shared/types/studies';
 
 import {checkStudiesStatus} from '../../_services/studiesService';
+import {deleteStudyAction} from '../../_services/studiesService/actions';
 import {StatusLabel} from './components/StatusLabel';
-import {Plus} from '@gravity-ui/icons';
+import styles from './StudiesList.module.css';
+import {Plus, TrashBin} from '@gravity-ui/icons';
 import {Button, Flex, Icon, Table, Text, useToaster} from '@gravity-ui/uikit';
 import {useRouter} from 'next/navigation';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 
 type StudiesListProps = {
 	studies: Study[];
@@ -18,6 +20,7 @@ export function StudiesList(props: StudiesListProps) {
 	const {studies} = props;
 	const router = useRouter();
 	const {add} = useToaster();
+	const [hoveredRow, setHoveredRow] = useState<string | null>(null);
 
 	useEffect(() => {
 		// Set up polling every 2 seconds
@@ -50,6 +53,27 @@ export function StudiesList(props: StudiesListProps) {
 		router.push(routes.study.url({id: studyId}));
 	};
 
+	const handleDelete = async (id: string, e: React.MouseEvent) => {
+		e.stopPropagation();
+		const result = await deleteStudyAction(id);
+		if (result.success) {
+			add({
+				name: 'delete-success',
+				title: 'Исследование успешно удалено',
+				theme: 'success',
+				autoHiding: 2000,
+			});
+			router.refresh();
+		} else {
+			add({
+				name: 'delete-error',
+				title: 'Ошибка при удалении исследования',
+				theme: 'danger',
+				autoHiding: 2000,
+			});
+		}
+	};
+
 	return (
 		<Flex direction="column" gap={4} spacing={{p: 4}} width="100%">
 			<Flex
@@ -72,6 +96,7 @@ export function StudiesList(props: StudiesListProps) {
 					{id: 'classLabel', name: 'Метка класса'},
 					{id: 'status', name: 'Статус'},
 					{id: 'date', name: 'Дата'},
+					{id: 'actions', name: ''},
 				]}
 				data={studies.map((study) => ({
 					id: study.id,
@@ -79,8 +104,25 @@ export function StudiesList(props: StudiesListProps) {
 					classLabel: study.classLabel,
 					status: <StatusLabel status={study.status} />,
 					date: new Date(study.createdAt).toLocaleString(),
+					actions: (
+						<div className={styles.actionsCell}>
+							<Button
+								view="flat"
+								size="s"
+								onClick={(e) => handleDelete(study.id, e)}
+								title="Удалить исследование"
+								className={`${styles.deleteButton} ${
+									hoveredRow === study.id ? styles.visible : ''
+								}`}
+							>
+								<Icon data={TrashBin} />
+							</Button>
+						</div>
+					),
 				}))}
 				onRowClick={(row) => handleRowClick(row.id)}
+				onRowMouseEnter={(row) => setHoveredRow(row.id)}
+				onRowMouseLeave={() => setHoveredRow(null)}
 				getRowDescriptor={() => ({interactive: true})}
 			/>
 		</Flex>

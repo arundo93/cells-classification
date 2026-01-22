@@ -35,7 +35,7 @@ export function toResultTable(
 }
 
 function toTime(start: Date, end: Date) {
-	const delta = end.getMilliseconds() - start.getMilliseconds();
+	const delta = Number(end) - Number(start);
 	if (delta > 1000) {
 		return `${Math.floor(delta / 1000)} с`;
 	}
