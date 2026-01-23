@@ -1,0 +1,16 @@
+.item {
+	position: relative;
+	flex: 1 1 400px;
+	box-sizing: border-box;
+}
+
+.point {
+	position: absolute;
+	top: var(--g-spacing-4);
+	left: 0;
+	width: var(--g-spacing-8);
+	height: var(--g-spacing-8);
+	background-color: var(--g-color-base-brand);
+	border-radius: 50%;
+	text-align: center;
+}

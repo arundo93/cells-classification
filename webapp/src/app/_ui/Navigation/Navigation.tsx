@@ -15,7 +15,7 @@ export function Navigation() {
 	return (
 		<div className={styles.container}>
 			<AsideHeader
-				logo={{text: 'BCC', icon: Molecule}}
+				logo={{text: 'BCC', icon: Molecule, href: routes.home.url()}}
 				menuItems={[
 					{
 						id: '0',
